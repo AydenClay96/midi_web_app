@@ -1,22 +1,15 @@
 import socket
 import midi
-import serial
+import win32com.client
 
 # Connection IP and port.
 HOST = "192.168.1.191"
 PORT = 65432
 
-# Get serial ports and find midi device.
-ports = ['COM%s' % (i + 1) for i in range(256)]
-result = []
-for port in ports:
-    try:
-        s = serial.Serial(port)
-        s.close()
-        result.append(port)
-    except (OSError, serial.SerialException):
-        pass
-print(result)
+# Get USB devices attached.
+wmi = win32com.client.GetObject("winmgmts:")
+for usb in wmi.InstancesOf ("Win32_USBHub"):
+    print(usb.DeviceID)
 
 # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 #     s.connect((HOST, PORT))
