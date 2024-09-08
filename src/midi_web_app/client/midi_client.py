@@ -1,6 +1,8 @@
 import socket
 import pygame
 from pygame import midi
+from utils.message import midi_to_msg
+from time import sleep
 
 
 HOST = "192.168.1.191"
@@ -9,7 +11,10 @@ MIDI = b'Roland Digital Piano'
 
 
 def find_devices() -> midi.Input:
-    """Finds the midi devices connected to the client machine."""
+    """
+    Finds the midi device in the MIDI global variable.
+    Will return None if not found.
+    """
     pygame.init()
     midi.init()
     # Find all midi devices connected.
@@ -29,11 +34,16 @@ def find_devices() -> midi.Input:
         else:
             outputs[name] = index
 
-    # Find the Roland device that I own.
-    return midi.Input(inputs[MIDI])
+    # Find the device listed in the global MIDI variable.
+    try:
+        return midi.Input(inputs[MIDI])
+    except KeyError:
+        print(f"Could not find {MIDI}")
+        return None
 
 def client_connect(midi_device: midi.Input) -> None:
     """connects the client midi device to the server socket.
+    note: if no midi device found, will send test msg.
 
     Parameters
     ----------
@@ -41,22 +51,18 @@ def client_connect(midi_device: midi.Input) -> None:
         from pygame, a midi input device.
     """
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        # Connect via the socket.
         s.connect((HOST, PORT))
-        # While connected:
         while True:
-            # If there is data yet to send.
-            if midi_device.poll():
-                # Read the first message on the buffer.
-                msg = midi_device.read(1)[0]
-                data = msg[0]
-                time = msg[1]
-                msg_str = ",".join([str(e) for e in data])
-                msg_str += str(time)
-                # Sends a byte-string of the entire data stream:
-                # [[type, note, velocity], timestamp]
-                print(f"{msg} = {msg_str}")
+            if midi_device:
+                if midi_device.poll():
+                    msg = midi_device.read(1)[0]
+                    msg_str = midi_to_msg(msg)
+                    s.sendall(str.encode(msg_str))
+            else:
+                msg = [[144, 35, 50], 500]
+                msg_str = midi_to_msg(msg)
                 s.sendall(str.encode(msg_str))
+                sleep(1)
 
 def main():
     midi = find_devices()
