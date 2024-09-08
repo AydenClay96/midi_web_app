@@ -1,13 +1,14 @@
 import socket
-import pygame
-from pygame import midi
-from utils.message import midi_to_msg
 from time import sleep
 
+import pygame
+from pygame import midi
+
+from utils.message import midi_to_msg
 
 HOST = "192.168.1.191"
 PORT = 65432
-MIDI = b'Roland Digital Piano'
+MIDI = b"Roland Digital Piano"
 
 
 def find_devices() -> midi.Input:
@@ -41,6 +42,7 @@ def find_devices() -> midi.Input:
         print(f"Could not find {MIDI}")
         return None
 
+
 def client_connect(midi_device: midi.Input) -> None:
     """connects the client midi device to the server socket.
     note: if no midi device found, will send test msg.
@@ -64,9 +66,11 @@ def client_connect(midi_device: midi.Input) -> None:
                 s.sendall(str.encode(msg_str))
                 sleep(1)
 
+
 def main():
     midi = find_devices()
     client_connect(midi)
+
 
 if __name__ == "__main__":
     main()

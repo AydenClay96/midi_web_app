@@ -1,8 +1,10 @@
 import socket
+
 from utils.message import msg_to_midi
 
 HOST = "192.168.1.191"
 PORT = 65432
+
 
 def server_connect() -> None:
     """The server end of the socket."""
@@ -20,8 +22,10 @@ def server_connect() -> None:
                     midi = msg_to_midi(msg)
                     print(msg)
 
+
 def main() -> None:
     server_connect()
+
 
 if __name__ == "__main__":
     main()
