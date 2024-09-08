@@ -51,8 +51,16 @@ def client_connect(midi_device: midi.Input) -> None:
                 msg = midi_device.read(1)[0]
                 data = msg[0]
                 time = msg[1]
-                msg_str = "".join([str(e) for e in data])
+                msg_str = ",".join([str(e) for e in data])
                 msg_str += str(time)
                 # Sends a byte-string of the entire data stream:
                 # [[type, note, velocity], timestamp]
+                print(f"{msg} = {msg_str}")
                 s.sendall(str.encode(msg_str))
+
+def main():
+    midi = find_devices()
+    client_connect(midi)
+
+if __name__ == "__main__":
+    main()
