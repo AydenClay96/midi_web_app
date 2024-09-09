@@ -1,12 +1,14 @@
 import pygame
 from scenes.game_scene import GameScene
+from settings import Settings
 
 
 class Application:
     def __init__(self) -> None:
         pygame.init()
+        self.settings = Settings()
         self.clock = pygame.time.Clock()
-        self.screen = pygame.display.set_mode((1400, 800))
+        self.screen = pygame.display.set_mode(self.settings.screen_size)
         self.scenes = {"game": GameScene()}
         self.scene = self.scenes["game"]
 
