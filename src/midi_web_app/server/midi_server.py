@@ -2,8 +2,8 @@ import socket
 
 from utils.message import msg_to_midi
 
-HOST = "192.168.1.191"
-PORT = 65432
+HOST = ""
+PORT = ""
 
 
 def server_connect() -> None:
