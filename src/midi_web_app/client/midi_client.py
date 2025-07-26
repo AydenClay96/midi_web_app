@@ -6,8 +6,8 @@ from pygame import midi
 
 from utils.message import midi_to_msg
 
-HOST = "192.168.1.191"
-PORT = 65432
+HOST = ""
+PORT = ""
 MIDI = b"Roland Digital Piano"
 
 
